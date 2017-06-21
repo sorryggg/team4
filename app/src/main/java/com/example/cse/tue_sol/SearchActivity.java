@@ -1,8 +1,11 @@
 package com.example.cse.tue_sol;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,8 +42,9 @@ public class SearchActivity extends AppCompatActivity {
 
     private static String TAG = "phptest_SearchActivity";
 
-    //php �ڵ�� array �� �Ӽ� �̸��̴�.
+    //php 코드상 array 의 속성 이름이다.
     private static final String TAG_JSON="Korail";
+    private static final String TAG_INDEX = "index";
     private static final String TAG_SRC = "src";
     private static final String TAG_DST = "dst";
     private static final String TAG_DEP = "dep";
@@ -75,6 +79,59 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         });
+
+        //원하는 승차권 클릭했을 경우 이벤트 처리
+        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
+
+                이 부분을 수정하여 원하는 열차시간표 클릭 시 결제나 다른 수단이 진행되도록 작성.
+                 */
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchActivity.this);
+
+        // 제목셋팅
+                alertDialogBuilder.setTitle("Korail talk+");
+
+        // AlertDialog 셋팅
+
+                alertDialogBuilder
+                        .setMessage("Do you want buy this ticket?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes!",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog, int id) {
+                                        // 프로그램을 종료한다
+                                        SearchActivity.this.finish();
+                                    }
+                                })
+                        .setNegativeButton("No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog, int id) {
+                                        // 다이얼로그를 취소한다
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // 다이얼로그 생성
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // 다이얼로그 보여주기
+                alertDialog.show();
+               // break;
+
+                //default:
+                //break;
+
+
+
+
+                Toast.makeText(SearchActivity.this ,mArrayList.get(position).get(TAG_SRC),Toast.LENGTH_LONG).show();//list item 클릭 시 출발역 이름 toast 출력
+            }
+        });
+
     }
 
     private class GetData extends AsyncTask<String, Void, String>{
@@ -177,23 +234,24 @@ public class SearchActivity extends AppCompatActivity {
 
     private void showResult(){
         try {
-            mArrayList.clear();//�ʱ�ȭ
+            mArrayList.clear();//초기화
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
             for(int i=0;i<jsonArray.length();i++){
                 JSONObject item = jsonArray.getJSONObject(i);
-
-                String id = item.getString(TAG_SRC);
-                String name = item.getString(TAG_DST);
+                String index=item.getString(TAG_INDEX);
+                String src = item.getString(TAG_SRC);
+                String dst = item.getString(TAG_DST);
                 String dep=item.getString(TAG_DEP);
                 String arr=item.getString(TAG_ARR);
                 String address = item.getString(TAG_TRAIN);
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
-                hashMap.put(TAG_SRC, id);
-                hashMap.put(TAG_DST, name);
+                hashMap.put(TAG_INDEX, index);
+                hashMap.put(TAG_SRC, src);
+                hashMap.put(TAG_DST, dst);
                 hashMap.put(TAG_DEP, dep);
                 hashMap.put(TAG_ARR, arr);
                 hashMap.put(TAG_TRAIN, address);
@@ -204,8 +262,8 @@ public class SearchActivity extends AppCompatActivity {
             ListAdapter adapter = new SimpleAdapter(
 
                     SearchActivity.this, mArrayList, R.layout.item_list,
-                    new String[]{TAG_SRC,TAG_DST,TAG_DEP,TAG_ARR, TAG_TRAIN},
-                    new int[]{R.id.textView_list_id, R.id.textView_list_name,R.id.textView_list_depart,R.id.textView_list_arrive, R.id.textView_list_address}
+                    new String[]{TAG_INDEX,TAG_SRC,TAG_DST,TAG_DEP,TAG_ARR, TAG_TRAIN},
+                    new int[]{R.id.textView_list_index,R.id.textView_list_id, R.id.textView_list_name,R.id.textView_list_depart,R.id.textView_list_arrive, R.id.textView_list_address}
             );
 
             mlistView.setAdapter(adapter);
