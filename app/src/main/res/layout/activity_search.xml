@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.cse.tue_sol.SearchActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/data1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="출발역"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/data2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="도착역"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText2"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/data3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="열차"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <EditText
+                android:id="@+id/editText3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="무궁화:0 , KTX:1 입력" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="조회" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="index  출발역      도착역     출발시간      도착시간    열차" />
+
+        <ListView
+            android:id="@+id/listView_main_list"
+            android:layout_width="match_parent"
+            android:layout_height="209dp"
+            android:layout_weight="0.61" />
+
+        <TextView
+            android:id="@+id/textView_main_result"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="TextView"
+            android:layout_weight="0.30" />
+
+    </LinearLayout>
+
+</RelativeLayout>
