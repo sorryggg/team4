@@ -1,5 +1,7 @@
 package com.example.cse.tue_sol;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import android.app.ProgressDialog;
@@ -31,6 +35,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.io.OutputStream;
 
@@ -38,7 +44,7 @@ import java.net.MalformedURLException;
 
 public class SearchActivity extends AppCompatActivity {
     private EditText data1, data2, data3;
-    private Button btn_send;
+    private Button btn_send,btn_date,btn_time;
 
     private static String TAG = "phptest_SearchActivity";
 
@@ -50,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String TAG_DEP = "dep";
     private static final String TAG_ARR = "arr";
     private static final String TAG_TRAIN ="train";
+    int year, month, day, hour, minutes;
 
     private TextView mTextViewResult;
     ArrayList<HashMap<String, String>> mArrayList;
@@ -62,6 +69,18 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         NetworkUtil.setNetworkPolicy();
 
+        GregorianCalendar calendar = new GregorianCalendar();
+
+        year = calendar.get(Calendar.YEAR);
+
+        month = calendar.get(Calendar.MONTH);
+
+        day= calendar.get(Calendar.DAY_OF_MONTH);
+
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        minutes = calendar.get(Calendar.MINUTE);
+
         mTextViewResult = (TextView)findViewById(R.id.textView_main_result);
         mlistView = (ListView) findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
@@ -70,12 +89,32 @@ public class SearchActivity extends AppCompatActivity {
         data2 = (EditText)findViewById(R.id.editText2);
         data3 = (EditText)findViewById(R.id.editText3);
         btn_send = (Button)findViewById(R.id.btn_send);
+        btn_date=(Button)findViewById(R.id.btn_date);
+        btn_time=(Button)findViewById(R.id.btn_time);
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 GetData task = new GetData();
                 task.execute("http://team4team4.esy.es/search.php",String.valueOf(data1.getText()),String.valueOf(data2.getText()),String.valueOf(data3.getText()));
+                String msg = String.format("%d : %d",  hour, minutes);
+
+                Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btn_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(SearchActivity.this, dateSetListener, year, month, day).show();
+
+            }
+        });
+
+        btn_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TimePickerDialog(SearchActivity.this, timeSetListener, hour, minutes, false).show();
 
             }
         });
@@ -274,5 +313,52 @@ public class SearchActivity extends AppCompatActivity {
         }
 
     }
+
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+
+
+
+        @Override
+
+        public void onDateSet(DatePicker view, int years, int monthOfYear,
+
+                              int dayOfMonth) {
+
+            // TODO Auto-generated method stub
+
+            String msg = String.format("%d / %d / %d", years,monthOfYear+1, dayOfMonth);
+            //내가 선택한 달력날짜 고정
+            year=years;
+            month=monthOfYear+1;
+            day=dayOfMonth;
+
+            Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_SHORT).show();
+
+        }
+
+    };
+
+
+
+    private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+
+
+
+        @Override
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+            // TODO Auto-generated method stub
+
+            String msg = String.format("%d : %d",  hourOfDay, minute);
+            //이 설정을 통해 내가 선택한 시간정보를 저장
+            hour=hourOfDay;minutes=minute;
+            Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_SHORT).show();
+
+        }
+
+    };
+
+
 }
 

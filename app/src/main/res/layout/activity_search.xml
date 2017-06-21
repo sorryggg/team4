@@ -22,6 +22,7 @@
                 android:id="@+id/data1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.5"
                 android:text="출발역"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -30,6 +31,20 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/editText"
                 android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/data2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="도착역"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -37,18 +52,19 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
-            <TextView
-                android:id="@+id/data2"
+            <Button
+                android:id="@+id/btn_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="도착역"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:layout_weight="1"
+                android:text="날짜" />
 
-            <EditText
+            <Button
+                android:id="@+id/btn_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText2"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="시간" />
         </LinearLayout>
 
         <LinearLayout
