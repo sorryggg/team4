@@ -105,13 +105,13 @@
             android:id="@+id/listView_main_list"
             android:layout_width="match_parent"
             android:layout_height="209dp"
-            android:layout_weight="0.61" />
+            android:layout_weight="0.98" />
 
         <TextView
             android:id="@+id/textView_main_result"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:text="TextView"
+            android:text=" "
             android:layout_weight="0.30" />
 
     </LinearLayout>

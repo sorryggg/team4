@@ -3,6 +3,7 @@ package com.example.cse.tue_sol;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -94,12 +95,38 @@ public class SearchActivity extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //시간 표기법 hh-mm-ss 로 표기
+                String smonth,sday,shour,sminute;
+                if(month<10){
+                    smonth="0"+String.valueOf(month);
+                }
+                else{
+                    smonth=String.valueOf(month);
+                }
+                if(day<10){
+                    sday="0"+String.valueOf(day);
+                }
+                else{
+                    sday=String.valueOf(day);
+                }
+                if(hour<10){
+                    shour="0"+String.valueOf(hour);
+                }
+                else{
+                    shour=String.valueOf(hour);
+                }
+                if(minutes<10){
+                    sminute="0"+String.valueOf(minutes);
+                }
+                else{
+                    sminute=String.valueOf(minutes);
+                }
+                String date = String.format("%d-%s-%s", year,smonth, sday);
+                String msg = String.format("%s%s00",  shour, sminute);
                 GetData task = new GetData();
-                task.execute("http://team4team4.esy.es/search.php",String.valueOf(data1.getText()),String.valueOf(data2.getText()),String.valueOf(data3.getText()));
-                String msg = String.format("%d : %d",  hour, minutes);
+                task.execute("http://team4team4.esy.es/search.php", String.valueOf(data1.getText()),String.valueOf(data2.getText()),String.valueOf(data3.getText()),date,msg);
 
-                Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SearchActivity.this, date+" "+msg, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -122,17 +149,14 @@ public class SearchActivity extends AppCompatActivity {
         //원하는 승차권 클릭했을 경우 이벤트 처리
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                이 부분을 수정하여 원하는 열차시간표 클릭 시 결제나 다른 수단이 진행되도록 작성.
-                 */
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchActivity.this);
 
-        // 제목셋팅
+                // 제목셋팅
                 alertDialogBuilder.setTitle("Korail talk+");
 
-        // AlertDialog 셋팅
+                // AlertDialog 셋팅
 
                 alertDialogBuilder
                         .setMessage("Do you want buy this ticket?")
@@ -141,8 +165,11 @@ public class SearchActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(
                                             DialogInterface dialog, int id) {
-                                        // 프로그램을 종료한다
-                                        SearchActivity.this.finish();
+                                      Intent intent = new Intent(SearchActivity.this,Payment.class);
+                                        int temp=Integer.parseInt(mArrayList.get(position).get(TAG_INDEX));
+                                       intent.putExtra("index",temp);
+                                       startActivity(intent);
+
                                     }
                                 })
                         .setNegativeButton("No",
@@ -159,7 +186,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 // 다이얼로그 보여주기
                 alertDialog.show();
-               // break;
+                //break;
 
                 //default:
                 //break;
@@ -167,7 +194,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
-                Toast.makeText(SearchActivity.this ,mArrayList.get(position).get(TAG_SRC),Toast.LENGTH_LONG).show();//list item 클릭 시 출발역 이름 toast 출력
+                // Toast.makeText(SearchActivity.this ,mArrayList.get(position).get(TAG_INDEX),Toast.LENGTH_LONG).show();//list item 클릭 시 출발역 이름 toast 출력
             }
         });
 
@@ -191,7 +218,7 @@ public class SearchActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             progressDialog.dismiss();
-            mTextViewResult.setText(result);
+          //  mTextViewResult.setText(result);
             Log.d(TAG, "response  - " + result);
 
             if (result == null){
@@ -213,12 +240,14 @@ public class SearchActivity extends AppCompatActivity {
             final String data1=params[1];
             final String data2=params[2];
             final String data3=params[3];
+            final String data4=params[4];//srcday
+            final String data5=params[5];//time
 
             try {
 
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                String postData = "srcstation=" + data1 + "&" + "dststation=" + data2 + "&" + "train=" + data3;
+                String postData = "srcstation=" + data1 + "&" + "dststation=" + data2 + "&" + "train=" + data3+ "&" + "srcday=" + data4 + "&" + "srctime=" + data5;//php 의 POST 변수
 
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -326,7 +355,7 @@ public class SearchActivity extends AppCompatActivity {
 
             // TODO Auto-generated method stub
 
-            String msg = String.format("%d / %d / %d", years,monthOfYear+1, dayOfMonth);
+            String msg = String.format("%d-%d-%d", years,monthOfYear+1, dayOfMonth);
             //내가 선택한 달력날짜 고정
             year=years;
             month=monthOfYear+1;
