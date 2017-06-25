@@ -1,14 +1,18 @@
 package com.example.cse.tue_sol;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -36,9 +40,9 @@ public class Payment extends ActionBarActivity {
     private ArrayList<ArrayList<String>> mChildList = null;
     private ArrayList<String> mChildListContent = null;
     private static String TAG = "phptest_MainActivity";
-    //php 코드상 array 의 속성 이름이다.
-    private static final String TAG_JSON="Korail";
-    private static final String TAG_INDEX = "index";
+    //php ???? array ?? ??? ??????.
+    private static final String TAG_JSON="Pay";
+    private static final String TAG_INDEX = "num";
     private static final String TAG_SRC = "src";
     private static final String TAG_DST = "dst";
     private static final String TAG_DEP = "dep";
@@ -46,12 +50,16 @@ public class Payment extends ActionBarActivity {
     private static final String TAG_TRAIN ="train";
     private static final String TAG_DAY = "day";
     private static final String TAG_PRICE ="price";
+    private NotificationManager notificationManager;
+    private Notification.Builder notification;
 
     TextView Point;
     private TextView mTextViewResult;
     ArrayList<HashMap<String, String>> mArrayList;
-    ListView mlistView;
+
     ListView mlistView1;
+    Button Btn_cancel;
+    Button Btn_confirm;
 
     String mJsonString1;
 
@@ -61,8 +69,19 @@ public class Payment extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
+        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notification = new Notification.Builder(this);
+        notification.setSmallIcon(R.drawable.ticket_pay);
+        notification.setContentTitle("Korail Tok");
+        notification.setContentText("Payment Complete!.");
+
+
         mTextViewResult = (TextView) findViewById(R.id.textView_main_result);
         mlistView1 = (ListView) findViewById(R.id.listView_main_list);
+        Btn_cancel = (Button)findViewById(R.id.cancel);
+        Btn_confirm = (Button)findViewById(R.id.pay_confirm);
+        mArrayList = new ArrayList<>();
         setLayout();
 
         mGroupList = new ArrayList<String>();
@@ -87,7 +106,7 @@ public class Payment extends ActionBarActivity {
 
         mListView.setAdapter(new BaseExpandableAdapter(this, mGroupList, mChildList));
 
-        // 그룹 클릭 했을 경우 이벤트
+        // ??? ??? ???? ??? ????
         mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
@@ -98,7 +117,7 @@ public class Payment extends ActionBarActivity {
             }
         });
 
-        // 차일드 클릭 했을 경우 이벤트
+        // ????? ??? ???? ??? ????
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -112,7 +131,7 @@ public class Payment extends ActionBarActivity {
             }
         });
 
-        // 그룹이 닫힐 경우 이벤트
+        // ????? ???? ??? ????
         mListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
@@ -121,7 +140,7 @@ public class Payment extends ActionBarActivity {
             }
         });
 
-        // 그룹이 열릴 경우 이벤트
+        // ????? ???? ??? ????
         mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
@@ -131,11 +150,33 @@ public class Payment extends ActionBarActivity {
         });
 
 
-        //intent 값 받기
+        //Button
+        Btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Payment.this, MainActivity.class);
+                notificationManager.notify(7777, notification.build());
+
+
+                startActivity(intent);
+
+            }
+        });
+        Btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Payment.this, SearchActivity.class);
+
+                startActivity(intent);
+
+            }
+        });
+
+        //intent ?? ???
         Intent intent = getIntent();
         int indexNum = intent.getIntExtra("index", 0);
         Log.d("ooooooooooooo",""+indexNum);
-        //보낸다
+        //??????
         GetData task = new GetData();
         task.execute("http://team4team4.esy.es/payment.php", String.valueOf(indexNum));
 
@@ -210,8 +251,8 @@ public class Payment extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
             String serverURL = params[0];
-            final String data = params[1];
-            String postData = "index=" + data ;
+            String data = params[1];
+            String postData = "data=" + data ;
 
 
             try {
@@ -281,7 +322,7 @@ public class Payment extends ActionBarActivity {
             for(int i=0;i<jsonArray.length();i++){
 
                 JSONObject item = jsonArray.getJSONObject(i);
-                String index=item.getString(TAG_INDEX);
+                String num=item.getString(TAG_INDEX);
                 String src = item.getString(TAG_SRC);
                 String dst = item.getString(TAG_DST);
                 String day =item.getString(TAG_DAY);
@@ -292,7 +333,7 @@ public class Payment extends ActionBarActivity {
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
-                hashMap.put(TAG_INDEX, index);
+                hashMap.put(TAG_INDEX, num);
                 hashMap.put(TAG_SRC, src);
                 hashMap.put(TAG_DST, dst);
                 hashMap.put(TAG_DEP, dep);
@@ -307,8 +348,8 @@ public class Payment extends ActionBarActivity {
             ListAdapter adapter = new SimpleAdapter(
 
                     Payment.this, mArrayList, R.layout.list_payment,
-                    new String[]{TAG_INDEX,TAG_SRC,TAG_DST,TAG_DEP,TAG_ARR, TAG_TRAIN, TAG_DAY, TAG_PRICE},
-                    new int[]{R.id.textView_list_index,R.id.textView_list_id, R.id.textView_list_name,R.id.textView_list_depart,R.id.textView_list_arrive, R.id.textView_list_address, R.id.textView_list_day, R.id.textView_list_price}
+                    new String[]{TAG_SRC,TAG_DST,TAG_DEP, TAG_TRAIN, TAG_DAY, TAG_PRICE},
+                    new int[]{R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_depart, R.id.textView_list_address, R.id.textView_list_day, R.id.textView_list_price}
             );
 
             mlistView1.setAdapter(adapter);

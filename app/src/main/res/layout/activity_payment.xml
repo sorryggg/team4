@@ -142,20 +142,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="결제하기"
-            android:id="@+id/button5" />
+            android:id="@+id/pay_confirm" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="취소"
-            android:id="@+id/button6" />
+            android:id="@+id/cancel" />
     </LinearLayout>
+
+    <TextView
+        android:layout_marginLeft="8px"
+        android:layout_marginTop="100px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ticket Info for payment"
+        android:textSize="40px"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hi"
-        android:textSize="40px"/>
+        android:text="출발역  도착역  출발시간     열차(1-KTX,2-무궁화)   날짜   가격"
+        android:textSize="25px"/>
     <ListView
         android:id="@+id/listView_main_list"
         android:layout_width="match_parent"

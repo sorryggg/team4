@@ -9,19 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView_list_index"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.45"
-            android:layout_margin="5dp"
-            />
+
 
         <TextView
             android:id="@+id/textView_list_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.22"
+            android:layout_weight="1.5"
             android:layout_margin="5dp"
             android:padding="5dp" />
 
@@ -29,7 +23,7 @@
             android:id="@+id/textView_list_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.80"
+            android:layout_weight="1.5"
             android:layout_margin="5dp"
             android:padding="5dp" />
 
@@ -42,23 +36,27 @@
             />
 
         <TextView
-            android:id="@+id/textView_list_arrive"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.80"
+            android:layout_weight="3"
             android:layout_margin="5dp"
-            />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="400px"
+            android:padding="5dp" />
 
         <TextView
             android:id="@+id/textView_list_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.39"
+            android:layout_weight="3"
             android:layout_margin="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="400px"
             android:padding="5dp" />
 
         <TextView
             android:id="@+id/textView_list_day"
+            android:layout_marginLeft="10px"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.39"

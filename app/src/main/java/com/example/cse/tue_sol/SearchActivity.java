@@ -1,47 +1,41 @@
 package com.example.cse.tue_sol;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.io.OutputStream;
-
-import java.net.MalformedURLException;
 
 public class SearchActivity extends AppCompatActivity {
     private EditText data1, data2, data3;
@@ -49,9 +43,9 @@ public class SearchActivity extends AppCompatActivity {
 
     private static String TAG = "phptest_SearchActivity";
 
-    //php 코드상 array 의 속성 이름이다.
+    //php ??? array ? ?? ????.
     private static final String TAG_JSON="Korail";
-    private static final String TAG_INDEX = "index";
+    private static final String TAG_INDEX = "num";
     private static final String TAG_SRC = "src";
     private static final String TAG_DST = "dst";
     private static final String TAG_DEP = "dep";
@@ -60,7 +54,7 @@ public class SearchActivity extends AppCompatActivity {
     int year, month, day, hour, minutes;
 
     private TextView mTextViewResult;
-    ArrayList<HashMap<String, String>> mArrayList;
+    private ArrayList<HashMap<String, String>> mArrayList;
     ListView mlistView;
     String mJsonString;
 
@@ -95,7 +89,7 @@ public class SearchActivity extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //시간 표기법 hh-mm-ss 로 표기
+                //?? ??? hh-mm-ss ? ??
                 String smonth,sday,shour,sminute;
                 if(month<10){
                     smonth="0"+String.valueOf(month);
@@ -146,17 +140,17 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        //원하는 승차권 클릭했을 경우 이벤트 처리
+        //??? ??? ???? ?? ??? ??
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchActivity.this);
 
-                // 제목셋팅
+                // ????
                 alertDialogBuilder.setTitle("Korail talk+");
 
-                // AlertDialog 셋팅
+                // AlertDialog ??
 
                 alertDialogBuilder
                         .setMessage("Do you want buy this ticket?")
@@ -176,15 +170,15 @@ public class SearchActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(
                                             DialogInterface dialog, int id) {
-                                        // 다이얼로그를 취소한다
+                                        // ?????? ????
                                         dialog.cancel();
                                     }
                                 });
 
-                // 다이얼로그 생성
+                // ????? ??
                 AlertDialog alertDialog = alertDialogBuilder.create();
 
-                // 다이얼로그 보여주기
+                // ????? ????
                 alertDialog.show();
                 //break;
 
@@ -194,7 +188,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
-                // Toast.makeText(SearchActivity.this ,mArrayList.get(position).get(TAG_INDEX),Toast.LENGTH_LONG).show();//list item 클릭 시 출발역 이름 toast 출력
+                // Toast.makeText(SearchActivity.this ,mArrayList.get(position).get(TAG_INDEX),Toast.LENGTH_LONG).show();//list item ?? ? ??? ?? toast ??
             }
         });
 
@@ -247,7 +241,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                String postData = "srcstation=" + data1 + "&" + "dststation=" + data2 + "&" + "train=" + data3+ "&" + "srcday=" + data4 + "&" + "srctime=" + data5;//php 의 POST 변수
+                String postData = "srcstation=" + data1 + "&" + "dststation=" + data2 + "&" + "train=" + data3+ "&" + "srcday=" + data4 + "&" + "srctime=" + data5;//php ? POST ??
 
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -302,13 +296,13 @@ public class SearchActivity extends AppCompatActivity {
 
     private void showResult(){
         try {
-            mArrayList.clear();//초기화
+            mArrayList.clear();//???
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
             for(int i=0;i<jsonArray.length();i++){
                 JSONObject item = jsonArray.getJSONObject(i);
-                String index=item.getString(TAG_INDEX);
+                String num=item.getString(TAG_INDEX);
                 String src = item.getString(TAG_SRC);
                 String dst = item.getString(TAG_DST);
                 String dep=item.getString(TAG_DEP);
@@ -317,7 +311,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
-                hashMap.put(TAG_INDEX, index);
+                hashMap.put(TAG_INDEX, num);
                 hashMap.put(TAG_SRC, src);
                 hashMap.put(TAG_DST, dst);
                 hashMap.put(TAG_DEP, dep);
@@ -331,7 +325,7 @@ public class SearchActivity extends AppCompatActivity {
 
                     SearchActivity.this, mArrayList, R.layout.item_list,
                     new String[]{TAG_INDEX,TAG_SRC,TAG_DST,TAG_DEP,TAG_ARR, TAG_TRAIN},
-                    new int[]{R.id.textView_list_index,R.id.textView_list_id, R.id.textView_list_name,R.id.textView_list_depart,R.id.textView_list_arrive, R.id.textView_list_address}
+                    new int[]{R.id.textView_list_index, R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_depart, R.id.textView_list_arrive, R.id.textView_list_address}
             );
 
             mlistView.setAdapter(adapter);
@@ -356,7 +350,7 @@ public class SearchActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
 
             String msg = String.format("%d-%d-%d", years,monthOfYear+1, dayOfMonth);
-            //내가 선택한 달력날짜 고정
+            //?? ??? ???? ??
             year=years;
             month=monthOfYear+1;
             day=dayOfMonth;
@@ -380,7 +374,7 @@ public class SearchActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
 
             String msg = String.format("%d : %d",  hourOfDay, minute);
-            //이 설정을 통해 내가 선택한 시간정보를 저장
+            //? ??? ?? ?? ??? ????? ??
             hour=hourOfDay;minutes=minute;
             Toast.makeText(SearchActivity.this, msg, Toast.LENGTH_SHORT).show();
 
